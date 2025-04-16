@@ -27,7 +27,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM("ACTIVE", "INACTIVE"),
-        defaultValue: "ACTIVE",
+        defaultValue: "INACTIVE",
         allowNull: true,
       },
       is_verifyed: {

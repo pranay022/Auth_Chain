@@ -6,26 +6,26 @@ module.exports = {
       {
         name: 'super-admin',
         role_type:'SUPER_ADMIN',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         name: 'admin',
         role_type: 'ADMIN',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         name: 'user',
         role_type: 'USER',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         name: 'guest',
         role_type: 'GUEST',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], {});
   },
@@ -35,21 +35,3 @@ module.exports = {
   }
 };
 
-
-
-module.exports = {
-  up:( queryInterface,  Sequelize) => {
-    return queryInterface.bulkInsert( 'roles', [
-      {
-        name: 'Super admin',
-        role_type : 'SUPER_ADMIN',
-        created_at: new Date(),
-        updated_at: new Date(),
-      }
-    ])
-  },
-
-  down: (queryInterface, Sequelize) =>{
-    return queryInterface.bulkDelete('roles', null, {});
-  }
-}

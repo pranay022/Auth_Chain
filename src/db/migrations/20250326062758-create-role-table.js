@@ -6,18 +6,31 @@ module.exports = {
         type: Sequelize.INTEGER,
         autoIncrement: true, 
         primaryKey: true,
+      },
+      name: {
+        type: Sequelize.STRING,
         allowNull: true,
       },
       role_type:{
-        type: Sequelize.ENUM('SUPER_USER', 'ADMIN', 'USER', 'GEST'),
-				defaultValue: 'GEST',
+        type: Sequelize.ENUM('SUPER_ADMIN', 'ADMIN', 'USER', 'GUEST'),
+				defaultValue: 'GUEST',
 				allowNull: true,
       },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false, 
+        defaultValue: Sequelize.NOW
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false, 
+        defaultValue: Sequelize.NOW,
+      }
     })
   },
 
   down: async (queryInterface, Sequelize) =>{
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('roles');
   }
 
 }

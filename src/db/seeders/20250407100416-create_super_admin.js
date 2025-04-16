@@ -1,18 +1,18 @@
-const { QueryInterface, Sequelize } = require("sequelize");
-const { down } = require("../migrations/20250326062758-create-role-table");
 
 module.exports = { 
   up: (queryInterface, Sequelize ) => {
     return queryInterface.bulkInsert('users', [ {
       name:'Super Admin',
       email: 'superuser@mail.com',
-      role_ID: 1,
-      password: '',
-      status: 'ACTIVE',
+      role_id: 1,
+      password: 'Test@123',
+      status: 'ACTIVE', 
       is_verifyed: 'true',
+      created_at: new Date(),
+      updated_at: new Date(),
     }])
   },
   down: ( queryInterface, Sequelize ) =>{
-    return queryInterface.bulkDelete('users', { eamil : 'superuser@mail.com'}, {});
+    return queryInterface.bulkDelete('users', { email : 'superuser@mail.com'}, {});
   }
 }
