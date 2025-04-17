@@ -1,7 +1,7 @@
 const {status} = require("http-status");
 
-const catchAysnc = require('../util/catchAsync');
-const ApiError = require('../util/ApiError');
+const catchAysnc = require('../utils/catchAsync');
+const ApiError = require('../utils/ApiError');
 const { userServices } = require('../services');
 const { APISuccessMsg } = require('../config/messages');
 
@@ -27,7 +27,31 @@ const userLogin = catchAysnc( async (req, res) => {
     })
 })
 
+const adminApproval = catchAysnc(async (req, res) => {
+    const response = await userServices.adminApproval(req);
+    if (!response) {
+        throw new ApiError(status.NOT_FOUND, 'Admin not found');
+    }
+    res.status(status.OK ).send({
+        message: APISuccessMsg,
+        data: response,
+    });
+});
+
+const userApproval = catchAysnc( async (req, res) => {
+    const response = await userServices.userApproval(req);
+    if(!response){
+        throw new ApiError(status.NOT_FOUND, 'User not found');
+    }
+    res.status(status.OK).send({
+        message: APISuccessMsg,
+        data: response
+    })
+})
+
 module.exports = {
     registerUser,
-    userLogin
+    userLogin,
+    adminApproval,
+    userApproval,
 };

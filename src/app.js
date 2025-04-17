@@ -7,7 +7,7 @@ const models = require('./db/models')
 const postgres = require('./config/postgres')
 const morgen = require('./config/morgen')
 const logger = require('./config/logger');
-const ApiError = require('./util/ApiError');
+const ApiError = require('./utils/ApiError');
 const {status} = require('http-status');
 const {errorConverter, errorHandler} = require('./middlewares/error')
 

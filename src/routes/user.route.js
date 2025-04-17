@@ -4,15 +4,15 @@ const userController = require('../controller/user.controller')
 
 
 router  
-    .route('/register')
+    .route('/admin-approval')
     .post(
-        userController.registerUser,
+        userController.adminApproval,
     )
 
 router
-    .route('/login')
-    .get(
-        userController.userLogin,
+    .route('/user-approval')
+    .post(
+        userController.userApproval,
     )
 
-module.exports = router
+module.exports = router 
