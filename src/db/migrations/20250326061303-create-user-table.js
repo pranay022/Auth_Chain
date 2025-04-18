@@ -1,5 +1,3 @@
-const { BOOLEAN } = require("sequelize");
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("users", {
@@ -25,13 +23,8 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      status: {
-        type: Sequelize.ENUM("ACTIVE", "INACTIVE"),
-        defaultValue: "INACTIVE",
-        allowNull: true,
-      },
       is_verifyed: {
-        type: BOOLEAN,
+        type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
       created_at: {

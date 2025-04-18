@@ -28,5 +28,5 @@ async function generateAuthTokens({ userId, roleId}) {
 }
 
 module.exports = {
-    generateAuthTokens
+    generateAuthTokens,
 }

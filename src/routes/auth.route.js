@@ -7,14 +7,14 @@ const authValidate = require('../validation/auth.validation')
 router
     .route('/register/users')
     .post(
-        validate(authValidate.register),
+        // validate(authValidate.register),
         authController.registerUser
     );
 
 router
     .route('/register/admin')
     .post(
-        validate(authValidate.register),
+        // validate(authValidate.register),
         authController.registerAdmin
     );
 

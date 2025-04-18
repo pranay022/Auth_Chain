@@ -1,9 +1,8 @@
-const {status} = require("http-status");
-
 const catchAysnc = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
 const { userServices } = require('../services');
 const { APISuccessMsg } = require('../config/messages');
+const { status } = require('http-status');
 
 const registerUser = catchAysnc(async (req, res) => {
     const response = await userServices.registerUser(req);

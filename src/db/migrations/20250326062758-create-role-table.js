@@ -14,7 +14,7 @@ module.exports = {
       role_type:{
         type: Sequelize.ENUM('SUPER_ADMIN', 'ADMIN', 'USER', 'GUEST'),
 				defaultValue: 'GUEST',
-				allowNull: true,
+				allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,

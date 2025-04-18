@@ -1,11 +1,11 @@
-const joi = require('@hapi/joi');
+const Joi = require('@hapi/joi');
 
 const register = {
-    body: Joi.object().key({
+    body: Joi.object().keys({
         email: Joi.string().required().email(),
-		password: Joi.string().required().custom(password),
+		password: Joi.string().required(),
 		name: Joi.string().required(),
-		roleId: Joi.number().required(),
+		role_type: Joi.number().required(),
     })
 }
 

@@ -1,8 +1,22 @@
-const httpStatus = require('http-status');
+const { status } = require('http-status');
 const ApiError = require('../utils/ApiError.js');
 const { encryptData } = require('../utils/auth.js');
-const db = require('../db/models/index.js');
+const db = require('../db/models');
 const { transport } = require("winston");
+
+async function getUserByEmail(email) {
+	const user = await db.users.findOne({
+		include: [
+			{
+				model: db.roles,
+				as: 'role',
+				attributes: ['role_type'],
+			},
+		],
+		raw: true,
+	});
+	return user;
+}
 
 async function registerUser(req) {
   let transaction = await db.sequelize.transaction();
@@ -13,18 +27,19 @@ async function registerUser(req) {
         { where: { email } }
       )
       if(user){
-        throw new ApiError(httpStatus.CONFLICT, 'This email is already registered')
+        throw new ApiError(status.CONFLICT, 'This email is already registered')
       }  
       let role = await db.roles.findOne({
         where: { role_type : 'USER'},
       })
       if(!role){
-        role = await db.role.create({
+        role = await db.roles.create({
           name: 'user',
           role_type: 'USER',
         })
       }
-      const createUser = await db.user.create({
+      
+      const createUser = await db.users.create({
         ...req.body,
         password: hashedPassword,
         role_id: role.id,
@@ -52,21 +67,21 @@ async function registerAdmin(req) {
         { where: { email } }
       )
       if(admin){
-        throw new ApiError(httpStatus.CONFLICT, 'This email is already registered')
+        throw new ApiError(status.CONFLICT, 'This email is already registered')
       }  
       let role = await db.roles.findOne({
         where: { role_type : 'ADMIN'},
       })
       if(!role){
-        role = await db.role.create({
-          name: 'admin',
+        role = await db.roles.create({
+          name: 'Admin',
           role_type: 'ADMIN',
         })
       }
-      const createAdmin = await db.user.create({
+      const createAdmin = await db.users.create({
         ...req.body,
         password: hashedPassword,
-        role_id: role.id,
+        role_type: role.id,
       },
       { transaction }
     )
@@ -126,6 +141,7 @@ async function userApproval(req) {
 }
 
 module.exports = {
+  getUserByEmail,
   registerUser,
   registerAdmin,
   adminApproval,

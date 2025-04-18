@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: true,
 			},
+			email: {
+				type: DataTypes.STRING,
+				allowNUll: true,
+			  },
 			role_id: {
 				type: DataTypes.INTEGER,
 				allowNull: true,
@@ -20,10 +24,9 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: true,
 			},
-			status: {
-				type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'BLOCKED'),
-				defaultValue: 'ACTIVE',
-				allowNull: true,
+			is_verifyed: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
 			},
 			created_at: {
 				allowNull: false,
@@ -43,5 +46,13 @@ module.exports = (sequelize, DataTypes) => {
 			updatedAt: 'updated_at',
 		}
 	);
+
+	users.associate = (models) => {
+		users.belongsTo(models.roles, {
+			foreignKey : 'role_id',
+			as: 'role'
+		});
+	};
+
 	return users;
 };
