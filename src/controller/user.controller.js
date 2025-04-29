@@ -1,22 +1,23 @@
 const catchAysnc = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
-const { userServices } = require('../services');
+const { userService } = require('../services');
 const { APISuccessMsg } = require('../config/messages');
 const { status } = require('http-status');
 
-const registerUser = catchAysnc(async (req, res) => {
-    const response = await userServices.registerUser(req);
+const adminApproval = catchAysnc(async (req, res) => {
+    const response = await userService.adminApproval(req);
     if (!response) {
-        throw new ApiError(status.NOT_FOUND);
+        throw new ApiError(status.NOT_FOUND, 'Admin not found');
     }
+    delete response.password;
     res.status(status.OK ).send({
         message: APISuccessMsg,
         data: response,
     });
 });
 
-const userLogin = catchAysnc( async (req, res) => {
-    const response = await userServices.userLogin(req);
+const userApproval = catchAysnc( async (req, res) => {
+    const response = await userService.userApproval(req);
     if(!response){
         throw new ApiError(status.NOT_FOUND, 'User not found');
     }
@@ -26,21 +27,21 @@ const userLogin = catchAysnc( async (req, res) => {
     })
 })
 
-const adminApproval = catchAysnc(async (req, res) => {
-    const response = await userServices.adminApproval(req);
-    if (!response) {
-        throw new ApiError(status.NOT_FOUND, 'Admin not found');
-    }
-    res.status(status.OK ).send({
-        message: APISuccessMsg,
-        data: response,
-    });
-});
-
-const userApproval = catchAysnc( async (req, res) => {
-    const response = await userServices.userApproval(req);
+const getAllUsers = catchAysnc ( async (req, res ) => {
+    const response = await userService.getAllUsers();
     if(!response){
-        throw new ApiError(status.NOT_FOUND, 'User not found');
+        throw new ApiError(status.NOT_FOUND, 'Users not found');
+    }
+    res.status(status.OK).send({
+        message: APISuccessMsg,
+        data: response
+    })
+})
+
+const getAlladmins = catchAysnc ( async (req, res ) => {
+    const response = await userService.getAlladmins();
+    if(!response){
+        throw new ApiError(status.NOT_FOUND, 'Admins not found');
     }
     res.status(status.OK).send({
         message: APISuccessMsg,
@@ -49,8 +50,8 @@ const userApproval = catchAysnc( async (req, res) => {
 })
 
 module.exports = {
-    registerUser,
-    userLogin,
     adminApproval,
     userApproval,
+    getAllUsers,
+    getAlladmins,
 };

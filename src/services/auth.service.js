@@ -10,7 +10,7 @@ async function loginUserWithEmailAndPassword(req) {
     if(!isPasswordMatch) {
         throw new ApiError(
             status.UNAUTHORIZED,
-            'Invalidd email or password'
+            'Invalid email or password'
         );
     }
     delete user.password;
