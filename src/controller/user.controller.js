@@ -21,6 +21,7 @@ const userApproval = catchAysnc( async (req, res) => {
     if(!response){
         throw new ApiError(status.NOT_FOUND, 'User not found');
     }
+    delete response.password;
     res.status(status.OK).send({
         message: APISuccessMsg,
         data: response
@@ -40,6 +41,8 @@ const getAllUsers = catchAysnc ( async (req, res ) => {
 
 const getAlladmins = catchAysnc ( async (req, res ) => {
     const response = await userService.getAlladmins();
+    console.log('ddd');
+    
     if(!response){
         throw new ApiError(status.NOT_FOUND, 'Admins not found');
     }

@@ -11,7 +11,7 @@ const checkAdminOrSuperAdmin = (req, res, next) => {
 };
 
 const checkAdmin = async (req, res, next) => {
-  if (!req.user || req.user["role.role_type"] !== "SUPER_ADMIN") {
+  if (!req.user || req.user["role.role_type"] !== "ADMIN") {
     return res
       .status(403)
       .json({ message: "Access denied. Only administrators can access this resource." });

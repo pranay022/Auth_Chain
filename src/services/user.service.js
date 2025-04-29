@@ -2,10 +2,10 @@ const { status } = require("http-status");
 const ApiError = require("../utils/ApiError.js");
 const { encryptData } = require("../utils/auth.js");
 const db = require("../db/models");
-const { transport } = require("winston");
 
 async function getUserByEmail(email) {
   const user = await db.users.findOne({
+    where: { email },
     include: [
       {
         model: db.roles,
@@ -32,7 +32,7 @@ async function registerUser(req) {
     });
     if (!role) {
       role = await db.roles.create({
-        name: "user",
+        name: "User",
         role_type: "USER",
       });
     }
@@ -97,18 +97,19 @@ async function registerAdmin(req) {
 
 async function adminApproval(req) {
   let transaction = await db.sequelize.transaction();
-  const adminId = req.body.id;
+  const adminId = req.query.id;
   try {
-    const updateAdmin = await db.users.update(
-      { is_verifyed: true},
-      {
-        where: { id: adminId },
-        attributes: { exclude: ['password'] },
-        returning: true,
-        raw: true,
-        transaction,
-      },
-    ).then((data) => data[1]);
+    const updateAdmin = await db.users
+      .update(
+        { is_verifyed: true },
+        {
+          where: { id: adminId },
+          returning: true,
+          raw: true,
+          transaction,
+        }
+      )
+      .then((data) => data[1]);
     await transaction.commit();
     const updateAdminObject = updateAdmin[0];
     return updateAdminObject;
@@ -122,18 +123,19 @@ async function adminApproval(req) {
 
 async function userApproval(req) {
   let transaction = await db.sequelize.transaction();
-  const userId = req.body.id;  
+  const userId = req.query.id;
   try {
-    const updateUser = await db.users.update(
-      { is_verifyed: true},
-      {
-        where: { id: userId },
-        attributes: { exclude: ['password'] },
-        returning: true,
-        raw: true,
-        transaction,
-      },
-    ).then((data) => data[1]);
+    const updateUser = await db.users
+      .update(
+        { is_verifyed: true },
+        {
+          where: { id: userId },
+          returning: true,
+          raw: true,
+          transaction,
+        }
+      )
+      .then((data) => data[1]);
     await transaction.commit();
     const updateUserObject = updateUser[0];
     return updateUserObject;
@@ -147,38 +149,80 @@ async function userApproval(req) {
 
 async function getAllUsers() {
   const users = await db.users.findAll({
-    include : [ 
+    include: [
       {
         model: db.roles,
-        as : 'role',
-        where: { role_type : 'USER' },
+        as: "role",
+        where: {
+          role_type: {
+            [db.Sequelize.Op.in]: ["USER", "GUEST"],
+          },
+        },
         attributes: [],
-      }
+      },
     ],
     attributes: {
-      exclude: [ 'password'],
+      exclude: ["password"],
     },
-    order: [['created_at', 'DESC']]
-  })
+    order: [["created_at", "DESC"]],
+  });
   return users;
 }
 
 async function getAlladmins() {
   const users = await db.users.findAll({
-    include : [ 
+    include: [
       {
         model: db.roles,
-        as : 'role',
-        where: { role_type : 'ADMIN' },
+        as: "role",
+        where: { role_type: "ADMIN" },
         attributes: [],
-      }
+      },
     ],
     attributes: {
-      exclude: [ 'password'],
+      exclude: ["password"],
     },
-    order: [['created_at', 'DESC']]
-  })
+    order: [["created_at", "DESC"]],
+  });
   return users;
+}
+
+async function registerGuest(req) {
+  let transaction = await db.sequelize.transaction();
+  const { email, password } = req.body;
+  const hashedPassword = await encryptData(password);
+  try {
+    const admin = await db.users.findOne({ where: { email } });
+    if (admin) {
+      throw new ApiError(status.CONFLICT, "This email is already registered");
+    }
+    let role = await db.roles.findOne({
+      where: { role_type: "GUEST" },
+    });
+    if (!role) {
+      role = await db.roles.create({
+        name: "Guest",
+        role_type: "GUEST",
+      });
+    }
+    const createGuest = await db.users.create(
+      {
+        ...req.body,
+        password: hashedPassword,
+        role_id: role.id,
+      },
+      { transaction }
+    );
+    const userObj = createGuest.get({ plain: true });
+    await transaction.commit();
+    delete userObj.password;
+    return userObj;
+  } catch (error) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+    throw error;
+  }
 }
 
 module.exports = {
@@ -189,4 +233,5 @@ module.exports = {
   userApproval,
   getAllUsers,
   getAlladmins,
+  registerGuest,
 };

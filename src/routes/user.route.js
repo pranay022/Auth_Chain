@@ -4,12 +4,13 @@ const userController = require('../controller/user.controller')
 const authJwt = require('../middlewares/authJwt')
 const { checkAdminOrSuperAdmin, checkSuperAdmin, checkAdmin } = require('../middlewares/authMiddleware')
 
-
 router  
     .route('/admin_approval')
     .post(
+        authJwt,
+        checkSuperAdmin, 
         userController.adminApproval,
-    )
+    );
 
 router
     .route('/user_approval')
@@ -17,7 +18,7 @@ router
         authJwt,
         checkAdmin, 
         userController.userApproval,
-    )
+    );
 
 router 
     .route('/all_users')
@@ -25,7 +26,7 @@ router
         authJwt,
         checkAdminOrSuperAdmin,
         userController.getAllUsers,
-    )
+    );
 
 router 
     .route('/all_admins')
@@ -33,6 +34,6 @@ router
         authJwt,
         checkSuperAdmin,
         userController.getAlladmins,
-    )
+    );
 
-module.exports = router 
+module.exports = router;

@@ -30,6 +30,19 @@ const registerAdmin = catchAysnc( async (req, res) => {
     });
 })
 
+const registerGuest = catchAysnc( async (req, res) => {
+    const user = await userService.registerGuest(req);
+    const tokens = await tokenService.generateAuthTokens({
+        userId: user.id,
+        roleId: user.role_id,
+    })
+    delete user.password;
+    res.status(status.CREATED).send({
+        message: APISuccessMsg,
+        data: { user, tokens },
+    });
+})
+
 const login = catchAysnc( async (req, res) => {
     const user = await authService.loginUserWithEmailAndPassword(req);
     const tokens = await tokenService.generateAuthTokens({
@@ -46,5 +59,6 @@ const login = catchAysnc( async (req, res) => {
 module.exports = {
     registerUser,
     registerAdmin,
+    registerGuest,
     login
 }
