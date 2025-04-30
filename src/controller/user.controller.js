@@ -41,11 +41,17 @@ const getAllUsers = catchAysnc ( async (req, res ) => {
 
 const getAlladmins = catchAysnc ( async (req, res ) => {
     const response = await userService.getAlladmins();
-    console.log('ddd');
-    
     if(!response){
         throw new ApiError(status.NOT_FOUND, 'Admins not found');
     }
+    res.status(status.OK).send({
+        message: APISuccessMsg,
+        data: response
+    })
+})
+
+const updateGuest = catchAysnc ( async (req, res ) => {
+    const response = await userService.updateGuest(req);
     res.status(status.OK).send({
         message: APISuccessMsg,
         data: response
@@ -57,4 +63,5 @@ module.exports = {
     userApproval,
     getAllUsers,
     getAlladmins,
+    updateGuest,
 };

@@ -28,8 +28,18 @@ const checkSuperAdmin = async (req, res, next) => {
   next();
 };
 
+const checkGuest = async (req, res, next) => {
+  if (!req.user || req.user["role.role_type"] !== "GUEST") {
+    return res
+      .status(403)
+      .json({ message: "Access denied. Only guests can access this resource. " });
+  }
+  next();
+};
+
 module.exports = {
   checkAdminOrSuperAdmin,
   checkSuperAdmin,
   checkAdmin,
+  checkGuest,
 };

@@ -2,33 +2,37 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controller/auth.controller')
 const validate = require('../middlewares/validate')
-const authValidate = require('../validation/auth.validation')
+const userValidate = require('../validation/user.validation')
+const multer = require('multer');
+const upload = multer();
 
 router
     .route('/register/users')
     .post(
-        validate(authValidate.register),
+        upload.single('profile_img'),
+        validate(userValidate.register),
         authController.registerUser
     );
 
 router
     .route('/register/admin')
     .post(
-        validate(authValidate.register),
+        upload.single('profile_img'),
+        validate(userValidate.register),
         authController.registerAdmin
     );
 
 router
     .route('/register/guest')
     .post(
-        validate(authValidate.register),
+        validate(userValidate.registerGuest),
         authController.registerGuest
     );
 
 router  
     .route('/login')
     .post(
-        validate(authValidate.login),
+        validate(userValidate.login),
         authController.login
     );
 

@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.BOOLEAN,
 				defaultValue: false,
 			},
+			profile_img: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
 			created_at: {
 				allowNull: false,
 				defaultValue: DataTypes.NOW,

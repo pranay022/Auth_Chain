@@ -6,6 +6,12 @@ const { decryptData, encryptData } = require('../utils/auth');
 async function loginUserWithEmailAndPassword(req) {
     const { email, password } = req.body;
     const user = await userService.getUserByEmail(email);
+    if (!user) {
+        throw new ApiError(
+            status.UNAUTHORIZED,
+            'User not found'
+        );
+    }    
     const isPasswordMatch = await decryptData(password, user.password);
     if(!isPasswordMatch) {
         throw new ApiError(
